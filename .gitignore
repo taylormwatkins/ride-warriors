@@ -1,0 +1,47 @@
+.dist/
+.firebase/
+.vscode/
+node_modules/
+package-lock.json
+notes.txt
+ridewarriors-2552b-aa7311a9a5f0.json
+ridewarriors.sql
+.env
+.firebaserc
+firebase.json
+.DS_Store
+pictures/
+*.sh
+*.properties
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package file
+*.jar
+*.war
+*.ear
+
+# Spring temporary files
+/tmp/
+/build/
+
+# Maven target folder
+/backend/target/
+
+
+# Gradle files
+.gradle
+/build/
+
+#STS files
+.apt_generated
+.cache
+.project
+.recommenders
+.settings
+
+

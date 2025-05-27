@@ -1,0 +1,37 @@
+.input-visit {
+    display: grid;
+    gap: 10px;
+}
+
+
+.weather-hidden {
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.weather-visible {
+    visibility: visible;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+
+.weather-input {
+    max-width: 125px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--input-bg);
+    box-shadow: 2px 2px var(--main-color);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--font-color);
+    padding: 2px;
+    margin: 3px;
+    outline: none;
+}
+
+.weather-input:focus {
+    border: 2px solid var(--input-focus);
+}

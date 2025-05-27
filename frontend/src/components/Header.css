@@ -1,0 +1,33 @@
+#logo {
+   height: 25vh;
+}
+
+.header {
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   height: 25vh;
+}
+
+p {
+   margin: 5px;
+   padding: 5px;
+}
+
+.smaller-btn {
+   cursor: pointer;
+   height: 30px;
+   width: 70px;
+   padding: 3px;
+}
+
+.user-display {
+   position: absolute;
+   top: 10px;
+   /* distance from the top */
+   left: 10px;
+   /* distance from the left */
+   z-index: 1000;
+   /* make sure it's on top of other elements */
+}
