@@ -1,3 +1,4 @@
+import './QueryPage.css';
 import { useState, useEffect } from 'react';
 import { getVisitByDate, getActivitiesByVisit } from '../api/getters.js';
 
@@ -78,7 +79,6 @@ function QueryPage() {
                 localStorage.setItem("visitDate", selectedVisit)
                 localStorage.setItem("visitId", response)
                 // setSelectedVisitId(response);
-                alert("Changing date...")
                 window.location.reload(0);
             }
             console.log("Response from getVisitByDate:", response);
@@ -88,7 +88,19 @@ function QueryPage() {
         }
     };
 
+    const formatTimeForDisplay = (timeString) => {
 
+        // get hours and minutes
+        let [h, m] = timeString.split(":").map(Number);
+        const p = h >= 12 ? "PM" : "AM";
+
+        // convert hour to 12-hour format
+        h = h % 12 || 12;
+
+        // create a new string with the formatted time
+        let formattedTime = `${h}:${String(m).padStart(2, "0")} ${p}`;
+        return formattedTime;
+    };
 
 
     return (
@@ -121,32 +133,36 @@ function QueryPage() {
                                     .map((a) => (
 
                                         <li key={a.id}>
-                                            Time: {a.timeOfDay} <br />
-                                            Name: {a.attraction.name} <br />
-                                            Wait time: {a.waitTime} <br />
+                                            <span className="activity-label">Time:</span> <span className="activity-value">{formatTimeForDisplay(a.timeOfDay)}</span> <br />
+                                            <span className="activity-label">Name:</span> <span className="activity-value">{a.attraction.name}</span> <br />
+                                            <span className="activity-label">Wait time:</span> <span className="activity-value">{a.waitTime}</span> <br />
                                             {a.meal ? (
-                                                <>
-                                                    {a.meal.foodItems.map(item => item.name).join(", ")} <br />
-                                                    Rating: {a.meal.rating}/10 <br />
+                                                <><span className="activity-label">Food items:</span><span> </span>
+                                                    <span className="activity-value">
+                                                        {a.meal.foodItems.map(item => item.name).join(", ")}
+                                                    </span> <br />
+                                                    <span className="activity-label">Rating:</span> <span className="activity-value">{a.meal.rating}/10</span> <br />
                                                 </>
-                                            ) : (
+                                            ) : a.attraction?.type === "ride" ? (
                                                 <>
                                                     {a.frontRow !== null && a.frontRow !== undefined && (
-                                                        <>Front Row: {a.frontRow ? "Yes" : "No"}  </>
-                                                    )} <br />
+                                                        <>
+                                                            <span className="activity-label">Front row:</span> <span className="activity-value">{a.frontRow ? "Yes" : "No"}</span> <br />
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : null}
+                                            {a.comments && (
+                                                <>
+                                                    <span className="activity-label">Comments:</span> <span className="activity-value">{a.comments}</span> <br />
                                                 </>
                                             )}
-                                            {a.comments ? (
-                                                <> Comments: {a.comments} <br /> </>
-                                            ) : (
-                                                <></>
-                                            )} 
                                             <br />
-                                        </li> 
-                                    ))} 
+                                        </li>
+                                    ))}
                             </ul>
 
-                        </div>
+                        </div> {/* end activities-list */}
 
                     </form>
                 </div> {/* end my-forms */}
