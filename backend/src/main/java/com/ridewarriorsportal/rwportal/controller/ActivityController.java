@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,10 +39,11 @@ public class ActivityController {
     // TODO: add error handling
     
     @PostMapping("/add")
-    public ResponseEntity<Integer> addActivity(@RequestBody Activity activity, @RequestParam LocalDate date) {
+    public ResponseEntity<Integer> addActivity(@RequestBody Activity activity, @RequestParam int visitId) {
         try {
             // find and set visit
-            activity.setVisit(visitService.findByDate(date));
+            Visit visit = visitService.findById(visitId);
+            activity.setVisit(visit);
 
             // save activity to the repository
             activityService.saveActivity(activity);

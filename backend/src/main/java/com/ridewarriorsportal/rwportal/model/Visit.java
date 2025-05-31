@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -29,7 +30,7 @@ public class Visit {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    // @JsonBackReference
+    @JsonBackReference
     private User user;
 
     @Column(name = "temperature")

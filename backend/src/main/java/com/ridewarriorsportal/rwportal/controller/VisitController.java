@@ -1,6 +1,7 @@
 package com.ridewarriorsportal.rwportal.controller;
 
 import com.ridewarriorsportal.rwportal.model.Visit;
+import com.ridewarriorsportal.rwportal.model.Activity;
 import com.ridewarriorsportal.rwportal.model.User;
 import com.ridewarriorsportal.rwportal.service.VisitService;
 import com.ridewarriorsportal.rwportal.service.UserService;
@@ -37,7 +38,7 @@ public class VisitController {
     }
 
     // TODO: add error handling
-    
+
     @PostMapping("/add")
     public ResponseEntity<Integer> addVisit(@RequestBody Visit visit, @RequestParam int userId) {
 
@@ -66,6 +67,20 @@ public class VisitController {
         }
 
         return ResponseEntity.ok(visit.getId());
+    }
+
+    @GetMapping("/getByUser")
+    public ResponseEntity<List<Visit>> getByUser(@RequestParam int userId) {
+
+        User user = userService.findById(userId);
+
+        List<Visit> visits = visitService.findAllByUser(user);
+
+        if (visits == null) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        return ResponseEntity.ok(visits);
     }
 
 }

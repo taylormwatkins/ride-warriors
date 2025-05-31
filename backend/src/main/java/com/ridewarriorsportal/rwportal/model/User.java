@@ -5,6 +5,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Getter
@@ -26,7 +28,7 @@ public class User {
     private String name;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    // @JsonManagedReference
+    @JsonManagedReference
     private List<Visit> visits;
 
 }

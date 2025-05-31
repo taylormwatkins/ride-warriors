@@ -3,6 +3,7 @@ package com.ridewarriorsportal.rwportal.serviceimpl;
 import com.ridewarriorsportal.rwportal.model.Visit;
 import com.ridewarriorsportal.rwportal.repository.VisitRepository;
 import com.ridewarriorsportal.rwportal.service.VisitService;
+import com.ridewarriorsportal.rwportal.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,9 @@ public class VisitServiceImpl implements VisitService {
         return visit.orElse(null);
     }
 
+    @Override
+    public List<Visit> findAllByUser(User user) {
+        Optional<List<Visit>> visits = visitRepo.findAllByUser(user);
+        return visits.orElse(null);
+    }
 }

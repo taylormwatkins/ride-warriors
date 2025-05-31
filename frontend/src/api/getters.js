@@ -72,3 +72,13 @@ export const getActivitiesByVisit = async (visitId) => {
         throw error;
     }
 };
+
+export const getVisitsByUser = async (userId) => {
+    try {
+        const response = await apiClient.get(`/visits/getByUser?userId=${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching visits by user:', error.response || error);
+        throw error;
+    }
+};

@@ -1,14 +1,14 @@
 import { addActivity, addMeal } from "../api/newEntry";
-import { getAttractionsByType, getVisitByDate } from "../api/getters";
+import { getAttractionsByType } from "../api/getters";
 import { useEffect, useState } from "react";
 import TimePicker from './TimePicker';
+import DateDisplay from './DateDisplay';
 import MealForm from "./MealForm";
 import './forms.css';
 
 function ActivityForm() {
-    const storedUserId = localStorage.getItem('userId');
+    const storedVisitId = localStorage.getItem('visitId');
 
-    const [dateDisplay, setDateDisplay] = useState("");
     const [attractions, setAttractions] = useState([]);
     const [newActivity, setNewActivity] = useState({
         timeOfDay: "",
@@ -17,11 +17,10 @@ function ActivityForm() {
         frontRow: false,
         comments: "",
     });
-    const [newVisitDate, setNewVisitDate] = useState(null);
     const [selectedType, setSelectedType] = useState("");
     const [attractionId, setAttractionId] = useState("");
-    const [calendarDisplay, setCalendarDisplay] = useState(false);
     const [mealData, setMealData] = useState(null);
+
 
 
 
@@ -60,24 +59,6 @@ function ActivityForm() {
 
     }, []);
 
-    useEffect(() => {
-        const showDate = async () => {
-
-            let visitDate = localStorage.getItem("visitDate")
-
-            if (visitDate === null) {
-                alert('Visit date not set. Redirecting to visit form.');
-                window.location.href = '/setvisit';
-            }
-            else {
-                setNewVisitDate(visitDate);
-                setDateDisplay(formatDateForDisplay(visitDate));
-            }
-        };
-
-        showDate();
-    }, []);
-
 
 
     const handleTypeChange = async (type) => {
@@ -89,20 +70,6 @@ function ActivityForm() {
         catch (error) {
             console.error("Failed to set attraction type:", error);
         }
-    };
-
-
-    const formatDateForDisplay = (dateString) => {
-        const date = new Date(dateString);
-
-        // increment the day because JS will parse it as UTC
-        // and UTC at midnight is a day ahead of EST
-        date.setUTCDate(date.getUTCDate() + 1);
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
     };
 
 
@@ -123,34 +90,12 @@ function ActivityForm() {
         return Math.round(minutes / 5) * 5;
     };
 
-    const toggleCalendarDisplay = () => {
-        setCalendarDisplay(!calendarDisplay);
-    };
 
-    const handleChangeDate = async () => {
-        try {
-            const response = await getVisitByDate(storedUserId, newVisitDate);
-            if (response === 0) {
-                alert("Visit not found. Please pick a different date or add a new visit.")
-            }
-            else {
-                localStorage.setItem("visitDate", newVisitDate)
-                localStorage.setItem("visitId", response);
-                setTimeout(() => {
-                    alert("Date changed!")
-                    window.location.reload(0);
-                }, 1000);
-            }
-        }
-        catch (error) {
-            console.error("Failed to change date:", error);
-        }
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const activityId = await addActivity(newActivity, newVisitDate);
+            const activityId = await addActivity(newActivity, storedVisitId);
 
             setTimeout(() => {
                 (async () => {
@@ -176,36 +121,15 @@ function ActivityForm() {
     };
 
 
-    useEffect(() => {
-        console.log("Updated activity attraction:", newActivity.attraction);
-    }, [newActivity.attraction]);
-
     return (
         <>
             <div className="wrapper">
                 <div className="my-forms">
                     <div className="title">
-                        <div className="date-display">
                             <div className="line-1">Entering activity for:</div>
-                            <div className="line-2">
-                                {dateDisplay}
-                                <button onClick={toggleCalendarDisplay}>Change</button>
-                            </div>
-                        </div>
+                            <DateDisplay />
                     </div>
 
-                    {calendarDisplay && (
-                        <>
-                            <input
-                                className="weather-input"
-                                type="date"
-                                value={newVisitDate}
-                                onChange={(e) => setNewVisitDate(e.target.value)}
-                            />
-                            <button onClick={handleChangeDate}>Change date</button>
-
-                        </>
-                    )}
                     <form className="form" onSubmit={handleSubmit}>
                         <label>Time of activity</label>
                         <TimePicker

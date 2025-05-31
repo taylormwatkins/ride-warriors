@@ -2,6 +2,8 @@ import { addVisit } from "../api/newEntry";
 import { getVisitByDate } from "../api/getters";
 import { useState } from "react";
 import "./visit.css";
+import "./forms.css";
+import DateDisplay from "./DateDisplay";
 
 // 'visit already exists'
 
@@ -49,6 +51,7 @@ function VisitForm() {
 
         // TODO: add error handling here in case a visit already exists for the selected date
         try {
+            console.log("Adding visit with date:", newVisit.date);
             const response = await addVisit(newVisit, storedUserId);
             localStorage.setItem('visitDate', newVisit.date);
             localStorage.setItem("visitId", response);
@@ -82,23 +85,14 @@ function VisitForm() {
         <>
             <div className="wrapper">
                 <div className="my-forms">
-                    <form onSubmit={handleSelectVisit}>
-                        <h3 className="title">Select visit</h3>
-                        <input
-                            className="weather-input"
-                            type="date"
-                            value={selectedVisit}
-                            onChange={(e) => setSelectedVisit(e.target.value)}
-                        />
-                        <button type="submit">Set date</button>
-
-                    </form>
+                    <div className="title">
+                        <div className="line-1">Current visit:</div>
+                        <DateDisplay />
+                    </div>
                     <form onSubmit={handleAddVisit}>
                         <div className="input-visit">
-
-                            <div>
-                                <h3 className="title">Or add a new one</h3>
-
+                            <div className="title">Or add a new one</div>
+                            <span>
                                 <label>Date: </label>
                                 <input
                                     className="weather-input"
@@ -106,8 +100,8 @@ function VisitForm() {
                                     value={newVisit.date}
                                     onChange={(e) => setNewVisit({ ...newVisit, date: e.target.value })}
                                 />
-                            </div>
-                            <button className="smaller-btn" type="button" onClick={setTodayDate}>Today</button>
+                                <button className="smaller-btn" type="button" onClick={setTodayDate}>Today</button>
+                            </span>
                             <label className="checkbox-container">
                                 <input
                                     type="checkbox"
@@ -119,8 +113,6 @@ function VisitForm() {
                             </label>
 
                             <div className={isVisible ? "weather-visible" : "weather-hidden"}>
-
-
                                 <div>
                                     <label>Temperature (in °F) </label>
                                     <input

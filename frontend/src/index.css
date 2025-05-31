@@ -17,3 +17,10 @@ html {
 #root {
   max-width: 400px;
 }
+
+.smaller-btn {
+  cursor: pointer;
+  height: 30;
+  min-width: 65px;
+  padding: 3px;
+}

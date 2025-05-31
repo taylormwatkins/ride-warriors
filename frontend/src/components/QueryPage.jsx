@@ -1,6 +1,7 @@
 import './QueryPage.css';
 import { useState, useEffect } from 'react';
 import { getVisitByDate, getActivitiesByVisit } from '../api/getters.js';
+import DateDisplay from './DateDisplay.jsx';
 
 
 
@@ -43,10 +44,14 @@ function QueryPage() {
                 setActivities(fetchedActivities);
                 console.log("Response from getActivitiesByVisit:", fetchedActivities);
 
+                if (fetchedActivities.length === 0) {
+                    alert("No activities found for this date. Please add activities first.");
+                }
             }
             catch (error) {
                 console.error("Failed to get activities:", error);
             }
+
         };
 
         loadActivities();
@@ -107,64 +112,49 @@ function QueryPage() {
         <>
             <div className="wrapper">
                 <div className="my-forms">
+                    <div className="title">
+                        <div className="line-1">Showing activities for:</div>
+                        <DateDisplay />
+                    </div>
 
-                    <form onSubmit={handleChangeDate}>
-                        <div className="title">Select visit</div>
-                        <input
-                            className="weather-input"
-                            type="date"
-                            value={selectedVisit}
-                            onChange={(e) => setSelectedVisit(e.target.value)}
-                        />
-                        <button type="submit">Set date</button> <br />
-                        <div className="title">
-                            <div className="date-display">
-                                <div className="line-1">Showing activities for:</div>
-                                <div className="line-2">
-                                    {dateDisplay}
-                                </div>
-                            </div>
-                        </div>
+                    <div className="activities-list">
+                        <ul>
+                            {activities
+                                .sort((a, b) => a.timeOfDay.localeCompare(b.timeOfDay))
+                                .map((a) => (
 
-                        <div className="activities-list">
-                            <ul>
-                                {activities
-                                    .sort((a, b) => a.timeOfDay.localeCompare(b.timeOfDay))
-                                    .map((a) => (
+                                    <li key={a.id}>
+                                        <span className="activity-label">Time:</span> <span className="activity-value">{formatTimeForDisplay(a.timeOfDay)}</span> <br />
+                                        <span className="activity-label">Name:</span> <span className="activity-value">{a.attraction.name}</span> <br />
+                                        <span className="activity-label">Wait time:</span> <span className="activity-value">{a.waitTime}</span> <br />
+                                        {a.meal ? (
+                                            <><span className="activity-label">Food items:</span><span> </span>
+                                                <span className="activity-value">
+                                                    {a.meal.foodItems.map(item => item.name).join(", ")}
+                                                </span> <br />
+                                                <span className="activity-label">Rating:</span> <span className="activity-value">{a.meal.rating}/10</span> <br />
+                                            </>
+                                        ) : a.attraction?.type === "ride" ? (
+                                            <>
+                                                {a.frontRow !== null && a.frontRow !== undefined && (
+                                                    <>
+                                                        <span className="activity-label">Front row:</span> <span className="activity-value">{a.frontRow ? "Yes" : "No"}</span> <br />
+                                                    </>
+                                                )}
+                                            </>
+                                        ) : null}
+                                        {a.comments && (
+                                            <>
+                                                <span className="activity-label">Comments:</span> <span className="activity-value">{a.comments}</span> <br />
+                                            </>
+                                        )}
+                                        <br />
+                                    </li>
+                                ))}
+                        </ul>
 
-                                        <li key={a.id}>
-                                            <span className="activity-label">Time:</span> <span className="activity-value">{formatTimeForDisplay(a.timeOfDay)}</span> <br />
-                                            <span className="activity-label">Name:</span> <span className="activity-value">{a.attraction.name}</span> <br />
-                                            <span className="activity-label">Wait time:</span> <span className="activity-value">{a.waitTime}</span> <br />
-                                            {a.meal ? (
-                                                <><span className="activity-label">Food items:</span><span> </span>
-                                                    <span className="activity-value">
-                                                        {a.meal.foodItems.map(item => item.name).join(", ")}
-                                                    </span> <br />
-                                                    <span className="activity-label">Rating:</span> <span className="activity-value">{a.meal.rating}/10</span> <br />
-                                                </>
-                                            ) : a.attraction?.type === "ride" ? (
-                                                <>
-                                                    {a.frontRow !== null && a.frontRow !== undefined && (
-                                                        <>
-                                                            <span className="activity-label">Front row:</span> <span className="activity-value">{a.frontRow ? "Yes" : "No"}</span> <br />
-                                                        </>
-                                                    )}
-                                                </>
-                                            ) : null}
-                                            {a.comments && (
-                                                <>
-                                                    <span className="activity-label">Comments:</span> <span className="activity-value">{a.comments}</span> <br />
-                                                </>
-                                            )}
-                                            <br />
-                                        </li>
-                                    ))}
-                            </ul>
+                    </div> {/* end activities-list */}
 
-                        </div> {/* end activities-list */}
-
-                    </form>
                 </div> {/* end my-forms */}
             </div> {/* end wrapper */}
         </>
