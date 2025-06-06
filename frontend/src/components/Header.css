@@ -1,5 +1,6 @@
 #logo {
    height: 25vh;
+   margin-top: 10px;
 }
 
 .header {
@@ -8,6 +9,7 @@
    flex-direction: column;
    align-items: center;
    height: 25vh;
+   margin-bottom: 15px;
 }
 
 p {
@@ -25,4 +27,14 @@ p {
    /* distance from the left */
    z-index: 1000;
    /* make sure it's on top of other elements */
+}
+
+
+.home-btn {
+   position: absolute;
+   top: 25px;
+   right: 25px;
+   height: 50px;
+   width: 65px;
+   border-radius: 80%;
 }

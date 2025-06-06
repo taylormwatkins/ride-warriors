@@ -36,8 +36,8 @@ function AttractionForm() {
     const handleAddAttraction = async (event) => {
         event.preventDefault();
         try {
-            const response = await addAttraction(newAttraction);
-            console.log("Attraction added successfully:", response);
+            await addAttraction(newAttraction);
+            alert("Attraction added successfully");
             setNewAttraction({ name: "", type: "ride" }); // reset form
         } catch (error) {
             console.error("Failed to add attraction:", error);
@@ -50,8 +50,8 @@ function AttractionForm() {
         event.preventDefault();
         try {
             console.log("new food item:", newFoodItem, selectedAttractionId);
-            const response = await addFoodItem(newFoodItem, selectedAttractionId);
-            console.log("Food item added successfully:", response);
+            await addFoodItem(newFoodItem, selectedAttractionId);
+            alert("Food item added successfully");
             setNewFoodItem({ name: "", isEntree: true }); // reset form
         }
         catch (error) {

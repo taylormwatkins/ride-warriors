@@ -1,21 +1,29 @@
 html {
-  --color1: #ba4d54;
-  --color2: #fdf0d5;
-  --color3: #669bbc;
+  --onyx: #383d3bff;
+  --paynes-gray: #19647eff;
+  --moonstone: #359DAD;
+  --robin-egg-blue: #50d5dbff;
+  --non-photo-blue: #92dce5ff;
+  --silver: #D2D7D9;
+  --timberwolf: #DED5D8;
+  --lavender-blush: #eee5e9ff;
+
 
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   font-size: 1.2em;
+  color: var(--onyx);
   font-variant: all-small-caps;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(to right, var(--color1), var(--color2), var(--color2), var(--color2), var(--color2), var(--color3));
-  min-height: 100vh;
 }
 
 #root {
-  max-width: 400px;
+  max-width: 450px;
+  /* background-color: #ADE4EB; */
+  min-height: 100vh;
+  background: linear-gradient(to right, #359DAD, #ADE4EB, #C3EFF3);
 }
 
 .smaller-btn {
@@ -24,3 +32,25 @@ html {
   min-width: 65px;
   padding: 3px;
 }
+
+
+body {
+  margin: 0;
+  background-color: #383d3bff;
+}
+
+
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: rgb(127, 202, 206);
+}
+
+
+.query-btn {
+  height: 25px;
+  padding: 0px 5px;
+  margin: 0px 10px 10px;
+}
+

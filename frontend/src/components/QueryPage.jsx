@@ -9,29 +9,18 @@ function QueryPage() {
 
     const storedUserId = localStorage.getItem('userId');
 
-    const [dateDisplay, setDateDisplay] = useState("");
-    const [selectedVisit, setSelectedVisit] = useState("");
     // const [selectedVisitId, setSelectedVisitId] = useState("");
     const [activities, setActivities] = useState([]);
+    const [coasters, setCoasters] = useState([]);
+    const [rides, setRides] = useState([]);
+    const [restaurants, setRestaurants] = useState([]);
+    const [others, setOthers] = useState([]);
+    const [selectedTypes, setSelectedTypes] = useState({});  
+
+    const [loadingMessage, setLoadingMessage] = useState("Loading...");
 
 
 
-    useEffect(() => {
-        const showDate = async () => {
-
-            let visitDate = localStorage.getItem("visitDate")
-
-            if (visitDate === null) {
-                setDateDisplay("No date selected");
-            }
-            else {
-                setSelectedVisit(visitDate);
-                setDateDisplay(formatDateForDisplay(visitDate));
-            }
-        };
-
-        showDate();
-    }, []);
 
 
     useEffect(() => {
@@ -40,17 +29,21 @@ function QueryPage() {
             let visitId = localStorage.getItem("visitId");
             console.log("Visit ID from localStorage:", visitId);
             try {
+                setLoadingMessage("Loading...");
                 const fetchedActivities = await getActivitiesByVisit(visitId);
                 setActivities(fetchedActivities);
+                sortActivities(fetchedActivities);
                 console.log("Response from getActivitiesByVisit:", fetchedActivities);
 
                 if (fetchedActivities.length === 0) {
-                    alert("No activities found for this date. Please add activities first.");
+                    setLoadingMessage("No activities found for this date");
+                    return;
                 }
             }
             catch (error) {
                 console.error("Failed to get activities:", error);
             }
+            setLoadingMessage("");
 
         };
 
@@ -58,40 +51,15 @@ function QueryPage() {
     }, []);
 
 
+    const sortActivities = (activities) => {
+        setCoasters(activities.filter(a => a.attraction?.type === "coaster"));
+        setRides(activities.filter(a => a.attraction?.type === "ride"));    
+        setRestaurants(activities.filter(a => a.attraction?.type === "restaurant"));
+        setOthers(activities.filter(a => a.attraction?.type === "other"));
 
-    const formatDateForDisplay = (dateString) => {
-        const date = new Date(dateString);
+    }
 
-        // increment the day because JS will parse it as UTC
-        // and UTC at midnight is a day ahead of EST
-        date.setUTCDate(date.getUTCDate() + 1);
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-    };
-
-
-    const handleChangeDate = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await getVisitByDate(storedUserId, selectedVisit);
-            if (response === 0) {
-                alert("Visit not found. Please pick a different date or add a new visit.")
-            }
-            else {
-                localStorage.setItem("visitDate", selectedVisit)
-                localStorage.setItem("visitId", response)
-                // setSelectedVisitId(response);
-                window.location.reload(0);
-            }
-            console.log("Response from getVisitByDate:", response);
-        }
-        catch (error) {
-            console.error("Failed to change date:", error);
-        }
-    };
+    
 
     const formatTimeForDisplay = (timeString) => {
 
@@ -116,7 +84,15 @@ function QueryPage() {
                         <div className="line-1">Showing activities for:</div>
                         <DateDisplay />
                     </div>
-
+                    <div className="activity-summary">
+                    {loadingMessage}
+                        <h3>Total activities: {activities.length}</h3>
+                        <h3><button className="query-btn">Coasters</button> {coasters.length} | 
+                        <button className="query-btn">Rides</button> {rides.length}<br/>
+                        <button className="query-btn">Restaurants</button> {restaurants.length} | 
+                        <button className="query-btn">Other</button> {others.length}</h3>
+                    </div>
+    
                     <div className="activities-list">
                         <ul>
                             {activities
@@ -134,7 +110,7 @@ function QueryPage() {
                                                 </span> <br />
                                                 <span className="activity-label">Rating:</span> <span className="activity-value">{a.meal.rating}/10</span> <br />
                                             </>
-                                        ) : a.attraction?.type === "ride" ? (
+                                        ) : a.attraction?.type === "coaster" ? (
                                             <>
                                                 {a.frontRow !== null && a.frontRow !== undefined && (
                                                     <>
@@ -152,6 +128,7 @@ function QueryPage() {
                                     </li>
                                 ))}
                         </ul>
+
 
                     </div> {/* end activities-list */}
 

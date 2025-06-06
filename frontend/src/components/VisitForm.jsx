@@ -1,8 +1,11 @@
 import { addVisit } from "../api/newEntry";
 import { getVisitByDate } from "../api/getters";
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./visit.css";
 import "./forms.css";
+import "./DateDisplay.css";
 import DateDisplay from "./DateDisplay";
 
 // 'visit already exists'
@@ -67,12 +70,27 @@ function VisitForm() {
         }
     };
 
+    // account for the timezone difference when formatting the date
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
 
+
+    const formatDateString = (dateString) => {
+        const date = new Date(dateString);
+        // increment the day because JS will parse it as UTC
+        // and UTC at midnight is a day ahead of EST
+        date.setUTCDate(date.getUTCDate() + 1);
+        return date;
+    }
 
 
     const setTodayDate = () => {
-        const today = new Date().toISOString().split("T")[0];
-        setNewVisit({ ...newVisit, date: today });
+        const today = new Date();
+        setNewVisit({ ...newVisit, date: formatDate(today) });
     };
 
 
@@ -94,11 +112,10 @@ function VisitForm() {
                             <div className="title">Or add a new one</div>
                             <span>
                                 <label>Date: </label>
-                                <input
-                                    className="weather-input"
-                                    type="date"
-                                    value={newVisit.date}
-                                    onChange={(e) => setNewVisit({ ...newVisit, date: e.target.value })}
+                                <DatePicker
+                                    className="calendar-input"
+                                    selected={newVisit.date ? formatDateString(newVisit.date) : null}
+                                    onChange={(date) => setNewVisit({ ...newVisit, date: formatDate(date) })}
                                 />
                                 <button className="smaller-btn" type="button" onClick={setTodayDate}>Today</button>
                             </span>
@@ -161,8 +178,10 @@ function VisitForm() {
                                     />
                                     <span className="checkmark"></span>
                                 </label>
+                            </div>
 
-                                <label>Additional comments</label>
+                            <div>
+                                <label>Comments</label>
                                 <input
                                     className="weather-input"
                                     type="text"
@@ -170,6 +189,7 @@ function VisitForm() {
                                     onChange={(e) => setNewVisit({ ...newVisit, comments: e.target.value })}
                                 />
                             </div>
+
 
 
                             <button type="submit">Add New Visit</button>

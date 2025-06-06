@@ -52,9 +52,15 @@ function Header() {
         }
     }
 
+
+    const goToHome = async () => {
+        window.location.href = '/';
+    }
+
+
     return (
         <header className="header">
-            <a href="/"><img id="logo" src="car.png" alt="Logo" /></a>
+            <a href="/"><img id="logo" src="8.png" alt="Logo" /></a>
 
             <div className="user-display" >
                 <p>{userName}</p>
@@ -65,6 +71,7 @@ function Header() {
                     </button>
                 )}
             </div>
+                <button className="home-btn" onClick={goToHome}>Home </button>
         </header>
     );
 

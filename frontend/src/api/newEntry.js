@@ -35,9 +35,9 @@ export const addMeal = async (meal, activityId) => {
 };
 
 
-export const addActivity = async (activity, date) => {
+export const addActivity = async (activity, visitId) => {
     try {
-        const response = await apiClient.post(`/activities/add?date=${date}`, activity);
+        const response = await apiClient.post(`/activities/add?visitId=${visitId}`, activity);
         return response.data;
     } catch (error) {
         console.error('Error adding activity:', error.response || error);

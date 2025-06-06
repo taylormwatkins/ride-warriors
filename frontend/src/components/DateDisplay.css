@@ -6,55 +6,68 @@ input[type="date"] {
 .calendar-input {
    max-width: 85px;
    border-radius: 5px;
-   border: 2px solid var(--main-color);
-   background-color: var(--input-bg);
-   box-shadow: 2px 2px var(--main-color);
+   border: 2px solid var(--onyx);
+   background-color: var(--lavender-blush);
+   box-shadow: 2px 2px var(--onyx);
    font-size: 15px;
    font-weight: 600;
-   color: var(--font-color);
+   color: var(--onyx);
    padding: 2px;
    margin: 3px;
    outline: none;
 }
 
 
+/* --onyx: #383d3bff;
+--paynes-gray: #19647eff;
+--moonstone: #359DAD;
+--robin-egg-blue: #50d5dbff;
+--non-photo-blue: #92dce5ff;
+--silver: #D2D7D9;
+--timberwolf: #DED5D8;
+--lavender-blush: #eee5e9ff; */
+
+
 
 .react-datepicker {
    font-family: 'Arial', sans-serif;
-   border: 2px solid #000000;
+   border: 3px solid #000000;
    border-radius: 10px;
-   background-color: #a1d4f4;
+   background-color: var(--lavender-blush);
    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 
 
 .react-datepicker__header {
-   background-color: #f8a3a9;
+   background-color: var(--non-photo-blue);
    border-bottom: 1px solid #000000;
 }
 
 
+
+
+
+
+.react-datepicker__day {
+   background-color: var(--non-photo-blue);
+   border-radius: 5px;
+   color: var(--onyx);
+}
+
 .react-datepicker__day--disabled {
-   color: #8c8c8c;
-   background-color: #bee2f9;
+   color: var(--timberwolf);
+   background-color: var(--lavender-blush);
    border-radius: 5px;
 }
 
 .react-datepicker__day--selected {
-   background-color: pink;
+   background-color: var(--moonstone);
    border-radius: 5px;
-   color: #003049;
+   color: var(--onyx);
 }
-
 
 .react-datepicker__navigation {
-   background-color: #f13e4a;
+   background-color: black;
 }
-
-
-
-
-
-
 

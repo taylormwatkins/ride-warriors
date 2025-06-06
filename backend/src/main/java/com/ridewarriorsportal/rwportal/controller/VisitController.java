@@ -84,3 +84,25 @@ public class VisitController {
     }
 
 }
+
+
+/*
+ * 
+ * public Weather updateWeather(Long id, Weather updatedData) {
+    return repository.findById(id).map(existingWeather -> {
+        if (updatedData.getTemperature() != null) {
+            existingWeather.setTemperature(updatedData.getTemperature());
+        }
+        if (updatedData.getHumidity() != null) {
+            existingWeather.setHumidity(updatedData.getHumidity());
+        }
+        if (updatedData.getWindSpeed() != null) {
+            existingWeather.setWindSpeed(updatedData.getWindSpeed());
+        }
+        if (updatedData.getUvIndex() != null) {
+            existingWeather.setUvIndex(updatedData.getUvIndex());
+        }
+        return repository.save(existingWeather);
+    }).orElseThrow(() -> new ResourceNotFoundException("Weather record not found with id " + id));
+}
+ */

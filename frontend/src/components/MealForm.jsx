@@ -50,16 +50,33 @@ function MealForm({ attractionId, onMealChange }) {
         <div className="meal-form">
             <label>Select food</label>
             <div className="food-options">
-                {foodItems.map(food => (
-                    <button
-                        key={food.id}
-                        type="button"
-                        className={meal.foodIds.includes(food.id) ? "selected-btn" : "form-btn"}
-                        onClick={() => handleFoodSelect(food.id)}
-                    >
-                        {food.name}
-                    </button>
-                ))}
+                {/* show entrees first then sides */}
+                {foodItems
+                    .filter(food => food.isEntree) 
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(food => (
+                        <button
+                            key={food.id}
+                            type="button"
+                            className={meal.foodIds.includes(food.id) ? "selected-btn" : "form-btn"}
+                            onClick={() => handleFoodSelect(food.id)}
+                        >
+                            {food.name}
+                        </button>
+                    ))} 
+                    {foodItems
+                    .filter(food => !food.isEntree) 
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(food => (
+                        <button
+                            key={food.id}
+                            type="button"
+                            className={meal.foodIds.includes(food.id) ? "selected-btn" : "form-btn"}
+                            onClick={() => handleFoodSelect(food.id)}
+                        >
+                            {food.name}
+                        </button>
+                    ))}
             </div>
             <label>Rating (out of 10)</label>
             <input

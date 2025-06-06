@@ -11,6 +11,7 @@ function DateDisplay() {
     const [newVisitDate, setNewVisitDate] = useState(null);
     const [calendarDisplay, setCalendarDisplay] = useState(false);
     const [visitDates, setVisitDates] = useState([]);
+    const [isDisabled, setIsDisabled] = useState(true);
 
     // change the date to the format javascript likes
     // const formatDate = (date) => date.toISOString().split("T")[0];
@@ -22,8 +23,14 @@ function DateDisplay() {
             let visitDate = localStorage.getItem("visitDate")
 
             if (visitDate === null) {
-                alert('Visit date not set. Redirecting to visit form.');
-                window.location.href = '/setvisit';
+
+                // prevent an infinite loop, don't redirect if we're already there
+                if (window.location.pathname !== "/setvisit") {
+                    alert('Visit date not set. Redirecting to visit form.');
+                    window.location.href = '/setvisit';
+                }
+                return;
+
             }
             else {
                 setNewVisitDate(visitDate);
@@ -71,7 +78,7 @@ function DateDisplay() {
         });
     };
 
-    const formatCalendarDisplay = (dateString) => {
+    const formatDateString = (dateString) => {
         const date = new Date(dateString);
         // increment the day because JS will parse it as UTC
         // and UTC at midnight is a day ahead of EST
@@ -82,6 +89,10 @@ function DateDisplay() {
 
     const toggleCalendarDisplay = () => {
         setCalendarDisplay(!calendarDisplay);
+    };
+
+    const enableChangeButton = () => {
+        setIsDisabled(false);
     };
 
 
@@ -121,22 +132,26 @@ function DateDisplay() {
 
             <div className="date-display">
                 {dateDisplay}
-                <button onClick={toggleCalendarDisplay} className="smaller-btn">Change</button>
+                <button onClick={toggleCalendarDisplay} className="smaller-btn">Set date</button>
             </div>
 
             {calendarDisplay && (
                 <div className="date-display">
                     <DatePicker
                         className="calendar-input"
-                        selected={formatCalendarDisplay(newVisitDate)}
+                        selected={newVisitDate ? formatDateString(newVisitDate) : null}
                         onChange={(date) => {
                             setNewVisitDate(formatDate(date));
-                            console.log("Selected date:", (date));
-                            console.log("formatted date:", formatDate(date));
+                            enableChangeButton();
                         }}
                         filterDate={(date) => visitDates.includes(formatDate(date))}
                     />
-                    <button onClick={handleChangeDate} className="smaller-btn">Change date</button>
+                    <button
+                        disabled={isDisabled}
+                        onClick={handleChangeDate}
+                        className="smaller-btn"
+                    >
+                        Change</button>
                 </div>
             )}
         </>

@@ -17,9 +17,11 @@ function ActivityForm() {
         frontRow: false,
         comments: "",
     });
-    const [selectedType, setSelectedType] = useState("");
+    const [selectedType, setSelectedType] = useState("coaster");
     const [attractionId, setAttractionId] = useState("");
     const [mealData, setMealData] = useState(null);
+    const [loadingMessage, setLoadingMessage] = useState("Loading...");
+
 
 
 
@@ -57,12 +59,17 @@ function ActivityForm() {
             timeOfDay: formattedTime,
         }));
 
+
+        // while we're here set the default type
+        handleTypeChange("coaster");
+
     }, []);
 
 
 
     const handleTypeChange = async (type) => {
         try {
+            setLoadingMessage("Loading...");
             setSelectedType(type)
             const fetchedAttractions = await getAttractionsByType(type);
             setAttractions(fetchedAttractions);
@@ -70,6 +77,8 @@ function ActivityForm() {
         catch (error) {
             console.error("Failed to set attraction type:", error);
         }
+        setLoadingMessage("---Select attraction---");
+
     };
 
 
@@ -94,6 +103,8 @@ function ActivityForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("newactivity", newActivity);
+        console.log("storedVisitId", storedVisitId);
         try {
             const activityId = await addActivity(newActivity, storedVisitId);
 
@@ -113,8 +124,6 @@ function ActivityForm() {
                 })();
             }, 1000);
 
-
-
         } catch (error) {
             console.error("Failed to add activity:", error);
         }
@@ -126,8 +135,8 @@ function ActivityForm() {
             <div className="wrapper">
                 <div className="my-forms">
                     <div className="title">
-                            <div className="line-1">Entering activity for:</div>
-                            <DateDisplay />
+                        <div className="line-1">Entering activity for:</div>
+                        <DateDisplay />
                     </div>
 
                     <form className="form" onSubmit={handleSubmit}>
@@ -146,13 +155,22 @@ function ActivityForm() {
                             <input
                                 type="radio"
                                 name="activityType"
+                                id="coaster"
+                                value="coaster"
+                                checked={selectedType === "coaster"}
+                                onChange={(e) => handleTypeChange(e.target.value)}
+                            />
+                            <label htmlFor="coaster" className="form-btn"> Coaster </label>
+
+                            <input
+                                type="radio"
+                                name="activityType"
                                 id="ride"
                                 value="ride"
                                 checked={selectedType === "ride"}
                                 onChange={(e) => handleTypeChange(e.target.value)}
                             />
                             <label htmlFor="ride" className="form-btn"> Ride </label>
-
 
                             <input
                                 type="radio"
@@ -162,8 +180,7 @@ function ActivityForm() {
                                 checked={selectedType === "restaurant"}
                                 onChange={(e) => handleTypeChange(e.target.value)}
                             />
-                            <label htmlFor="restaurant" className="form-btn"> Restaurant </label>
-
+                            <label htmlFor="restaurant" className="form-btn"> Food </label>
 
                             <input
                                 type="radio"
@@ -174,7 +191,7 @@ function ActivityForm() {
                                 onChange={(e) => handleTypeChange(e.target.value)}
                             />
                             <label htmlFor="other" className="form-btn"> Other </label>
-                        </div> {/* end of radio-group */}
+                        </div>
 
                         {selectedType && (
                             <>
@@ -184,7 +201,7 @@ function ActivityForm() {
                                     value={newActivity.attraction ? newActivity.attraction.id : ""}
                                     onChange={handleAttractionChange}
                                 >
-                                    <option value="">-- Select Attraction --</option>
+                                    <option value="">{loadingMessage}</option>
                                     {attractions
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map((a) => (
@@ -207,7 +224,7 @@ function ActivityForm() {
                             placeholder="Wait time in minutes"
                         />
 
-                        {selectedType === "ride" && (
+                        {selectedType === "coaster" && (
                             <>
                                 <label className="checkbox-container">Front row?
                                     <input
