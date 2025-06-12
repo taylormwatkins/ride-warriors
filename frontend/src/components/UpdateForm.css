@@ -1,0 +1,54 @@
+.activities-list, .weather-summary {
+    font-variant: normal;
+    font-size: .7em;
+}
+
+.activity-label, .weather-label {
+    display: inline-block;
+    margin-bottom: 2px;
+}
+
+.activity-value, .weather-value {
+    color: black;
+}
+
+
+li {
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding: 3px;
+    min-width: 175px;
+    position: relative;
+    background-color: var(--lavender-blush)
+}
+
+
+.edit-btn {
+    cursor: pointer;
+    height: 20px;
+    min-width: 40px;
+    padding: 2px;
+    top: 2px;
+    right: 5px;
+    position: absolute;
+    font-size: 0.75em;
+}
+
+
+.query-btn {
+    height: 25px;
+    padding: 0px 5px;
+    margin: 0px 10px 10px;
+}
+
+.selected-query-btn {
+    background-color: var(--paynes-gray);
+    color: var(--lavender-blush);
+    box-shadow: 2px 2px var(--onyx);
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    height: 25px;
+    padding: 0px 5px;
+    margin: 0px 10px 10px;
+}

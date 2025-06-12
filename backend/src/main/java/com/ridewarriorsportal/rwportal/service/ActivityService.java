@@ -14,4 +14,6 @@ public interface ActivityService {
 
     List<Activity> findAllByVisit(Visit visit);
 
+    void deleteActivityById(Integer id);
+
 }

@@ -9,4 +9,7 @@ public interface MealService {
     void saveMeal(Meal meal);
 
     Meal findById(Integer id);
+
+    Meal findByActivityId(Integer activityId);
+
 }

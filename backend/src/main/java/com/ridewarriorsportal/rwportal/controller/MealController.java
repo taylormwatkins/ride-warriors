@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
@@ -59,6 +60,25 @@ public class MealController {
         return meal.getId();
     }
 
+    @PutMapping("/updateMeal")
+    public int updateMeal(@RequestBody MealRequest request, @RequestParam int activityId) {
+
+        Meal meal = mealService.findByActivityId(activityId);
+
+        if (meal == null) {
+            return 0; 
+        }
+
+        meal.setRating(request.getRating());
+
+        // fetch the foods by ids
+        List<FoodItem> foods = foodItemService.findAllById(request.getFoodIds());
+        meal.setFoodItems(foods);
+
+        mealService.saveMeal(meal);
+
+        return meal.getId();
+    }
 }
 
 @Getter

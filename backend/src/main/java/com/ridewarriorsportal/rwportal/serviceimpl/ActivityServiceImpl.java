@@ -38,4 +38,8 @@ public class ActivityServiceImpl implements ActivityService {
         return activityRepo.findAllByVisit(visit);
     }
 
+    @Override
+    public void deleteActivityById(Integer id) {
+        activityRepo.deleteById(id);
+    }
 }

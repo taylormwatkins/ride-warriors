@@ -1,7 +1,6 @@
 package com.ridewarriorsportal.rwportal.controller;
 
 import com.ridewarriorsportal.rwportal.model.Visit;
-import com.ridewarriorsportal.rwportal.model.Activity;
 import com.ridewarriorsportal.rwportal.model.User;
 import com.ridewarriorsportal.rwportal.service.VisitService;
 import com.ridewarriorsportal.rwportal.service.UserService;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
@@ -53,7 +53,7 @@ public class VisitController {
         return ResponseEntity.ok(visit.getId());
     }
 
-    @PostMapping("/getByDate")
+    @GetMapping("/getByDate")
     public ResponseEntity<Integer> getByDate(@RequestBody Visit visitRequest, @RequestParam int userId) {
 
         // get the date object
@@ -67,6 +67,19 @@ public class VisitController {
         }
 
         return ResponseEntity.ok(visit.getId());
+    }
+
+    @GetMapping("/getById")
+    public ResponseEntity<Visit> getById(@RequestParam int visitId) {
+        try {
+            Visit visit = visitService.findById(visitId);
+
+            return ResponseEntity.ok(visit);
+
+        } catch (Exception e) {
+            System.out.println("Error finding visit " + e);
+            return ResponseEntity.ok(null);
+        }
     }
 
     @GetMapping("/getByUser")
@@ -83,26 +96,46 @@ public class VisitController {
         return ResponseEntity.ok(visits);
     }
 
-}
+    @PutMapping("/updateVisit")
+    public ResponseEntity<Visit> updateVisit(@RequestBody Visit updatedVisit, @RequestParam int visitId) {
 
+        try {
+            Visit visit = visitService.findById(visitId);
 
-/*
- * 
- * public Weather updateWeather(Long id, Weather updatedData) {
-    return repository.findById(id).map(existingWeather -> {
-        if (updatedData.getTemperature() != null) {
-            existingWeather.setTemperature(updatedData.getTemperature());
+            if (updatedVisit.getWindSpeed() != null) {
+                visit.setWindSpeed(updatedVisit.getWindSpeed());
+            }
+            if (updatedVisit.getTemperature() != null) {
+                visit.setTemperature(updatedVisit.getTemperature());
+            }
+            if (updatedVisit.getHumidity() != null) {
+                visit.setHumidity(updatedVisit.getHumidity());
+            }
+            if (updatedVisit.getUvIndex() != null) {
+                visit.setUvIndex(updatedVisit.getUvIndex());
+            }
+            if (updatedVisit.getRain() != null) {
+                visit.setRain(updatedVisit.getRain());
+            }
+
+            visitService.saveVisit(visit);
+            return ResponseEntity.ok(visit);
+
+        } catch (Exception e) {
+            System.out.println("Error updating visit " + e);
+            return ResponseEntity.ok(null);
         }
-        if (updatedData.getHumidity() != null) {
-            existingWeather.setHumidity(updatedData.getHumidity());
+    }
+
+    @PostMapping("/deleteVisit")
+    public ResponseEntity<Integer> deleteVisit(@RequestParam int visitId) {
+        try {
+            visitService.deleteById(visitId);
+            return ResponseEntity.ok(visitId);
+
+        } catch (Exception e) {
+            System.out.println("Error deleting visit " + e);
+            return ResponseEntity.ok(0);
         }
-        if (updatedData.getWindSpeed() != null) {
-            existingWeather.setWindSpeed(updatedData.getWindSpeed());
-        }
-        if (updatedData.getUvIndex() != null) {
-            existingWeather.setUvIndex(updatedData.getUvIndex());
-        }
-        return repository.save(existingWeather);
-    }).orElseThrow(() -> new ResourceNotFoundException("Weather record not found with id " + id));
+    }
 }
- */

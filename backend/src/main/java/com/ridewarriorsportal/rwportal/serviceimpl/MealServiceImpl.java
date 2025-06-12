@@ -31,4 +31,11 @@ public class MealServiceImpl implements MealService {
         Optional<Meal> meal = mealRepo.findById(id);
         return meal.orElse(null);
     }
+
+    @Override
+    public Meal findByActivityId(Integer activityId) {
+        Optional<Meal> meal = mealRepo.findByActivityId(activityId);
+        return meal.orElse(null);
+    }
+
 }

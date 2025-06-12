@@ -19,4 +19,5 @@ public interface VisitService {
 
     List<Visit> findAllByUser(User user);
 
+    void deleteById(Integer id);
 }

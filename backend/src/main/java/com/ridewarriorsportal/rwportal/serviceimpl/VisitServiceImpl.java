@@ -51,4 +51,11 @@ public class VisitServiceImpl implements VisitService {
         Optional<List<Visit>> visits = visitRepo.findAllByUser(user);
         return visits.orElse(null);
     }
+
+    @Override    
+    public void deleteById(Integer id) {
+        visitRepo.deleteById(id);
+    }
+    
+
 }

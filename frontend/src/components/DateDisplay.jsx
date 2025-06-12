@@ -29,7 +29,7 @@ function DateDisplay() {
                     alert('Visit date not set. Redirecting to visit form.');
                     window.location.href = '/setvisit';
                 }
-                return;
+                setDateDisplay("No date set");
 
             }
             else {
@@ -132,7 +132,7 @@ function DateDisplay() {
 
             <div className="date-display">
                 {dateDisplay}
-                <button onClick={toggleCalendarDisplay} className="smaller-btn">Set date</button>
+                <button onClick={toggleCalendarDisplay} className="smaller-btn">Change</button>
             </div>
 
             {calendarDisplay && (
@@ -151,7 +151,7 @@ function DateDisplay() {
                         onClick={handleChangeDate}
                         className="smaller-btn"
                     >
-                        Change</button>
+                        Set Date</button>
                 </div>
             )}
         </>

@@ -60,7 +60,7 @@ function Header() {
 
     return (
         <header className="header">
-            <a href="/"><img id="logo" src="8.png" alt="Logo" /></a>
+            <a href="/"><img id="logo" src="logo.png" alt="Logo" /></a>
 
             <div className="user-display" >
                 <p>{userName}</p>

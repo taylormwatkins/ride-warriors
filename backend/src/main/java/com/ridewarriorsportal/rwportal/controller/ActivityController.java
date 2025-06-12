@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
@@ -37,7 +38,7 @@ public class ActivityController {
     }
 
     // TODO: add error handling
-    
+
     @PostMapping("/add")
     public ResponseEntity<Integer> addActivity(@RequestBody Activity activity, @RequestParam int visitId) {
         try {
@@ -65,5 +66,51 @@ public class ActivityController {
         Visit visit = visitService.findById(visitId);
 
         return ResponseEntity.ok(activityService.findAllByVisit(visit));
+    }
+
+    @PutMapping("/updateActivity")
+    public ResponseEntity<Activity> updateActivity(@RequestBody Activity updatedActivity, @RequestParam int activityId) {
+
+        try {
+            Activity activity = activityService.findById(activityId);
+        
+
+            if (updatedActivity.getTimeOfDay() != null) {
+                activity.setTimeOfDay(updatedActivity.getTimeOfDay());
+            }
+            if (updatedActivity.getWaitTime() != null) {
+                activity.setWaitTime(updatedActivity.getWaitTime());
+            }
+            if (updatedActivity.getFrontRow() != null) {
+                activity.setFrontRow(updatedActivity.getFrontRow());
+            }
+            if (updatedActivity.getComments() != null) {
+                activity.setComments(updatedActivity.getComments());
+            }
+
+            activityService.saveActivity(activity);
+            // return ResponseEntity.ok(activity);
+            return ResponseEntity.ok(activity);
+
+        } catch (Exception e) {
+            System.out.println("Error updating activity " + e);
+            return ResponseEntity.ok(null);
+        }
+    }
+
+    @PostMapping("/deleteActivity")
+    public ResponseEntity<Integer> deleteActivity(@RequestParam int activityId) {
+        try {
+            Activity activity = activityService.findById(activityId);
+            if (activity != null) {
+                activityService.deleteActivityById(activityId);
+                return ResponseEntity.ok(activityId);
+            } else {
+                return ResponseEntity.ok(-1); // Activity not found
+            }
+        } catch (Exception e) {
+            System.out.println("Error deleting activity " + e);
+            return ResponseEntity.ok(0); 
+        }
     }
 }

@@ -55,10 +55,21 @@ export const getFoodByAttraction = async (attractionId) => {
 
 export const getVisitByDate = async (userId, date) => {
     try {
-        const response = await apiClient.post(`/visits/getByDate?userId=${userId}`, { date });
+        const response = await apiClient.get(`/visits/getByDate?userId=${userId}`, { date });
         return response.data;
     } catch (error) {
-        console.error('Error changing date:', error.response || error);
+        console.error('Error finding visit by date:', error.response || error);
+        throw error;
+    }
+};
+
+
+export const getVisitById = async (visitId) => {
+    try {
+        const response = await apiClient.get(`/visits/getById?visitId=${visitId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error finding visit:', error.response || error);
         throw error;
     }
 };

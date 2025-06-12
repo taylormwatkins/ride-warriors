@@ -15,7 +15,7 @@ import jakarta.persistence.*;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+// @ToString
 @Entity
 @Table(name = "meals")
 

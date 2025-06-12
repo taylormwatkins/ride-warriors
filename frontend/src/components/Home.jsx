@@ -11,7 +11,7 @@ function Home() {
 
     useEffect(() => {
         const checkAdminStatus = async () => {
-            if (storedUserId === "1") {
+            if (storedUserId === "11") {
                 setAdminToggle(true);
             }
             else {
@@ -52,7 +52,7 @@ function Home() {
                 <button onClick={goToSetVisit}>Set visit</button>
                 <button onClick={goToAddActivity}>Add activity</button>
                 <button onClick={goToQueries}>Make query</button>
-                <button onClick={goToUpdate}>Update a previous visit</button>
+                <button onClick={goToUpdate}>Update a visit</button>
                 {adminToggle &&
                     <button onClick={goToAddAttraction}>Add attraction or food</button>
                 }

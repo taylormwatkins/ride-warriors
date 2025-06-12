@@ -1,0 +1,39 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--lavender-blush);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  position: relative
+}
+
+.modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-btn {
+  cursor: pointer;
+  height: 30;
+  min-width: 65px;
+  padding: 3px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgb(255, 88, 88);
+}
+

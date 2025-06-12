@@ -68,9 +68,10 @@ function ActivityForm() {
 
 
     const handleTypeChange = async (type) => {
+        setLoadingMessage("Loading...");
+        setSelectedType(type)
+
         try {
-            setLoadingMessage("Loading...");
-            setSelectedType(type)
             const fetchedAttractions = await getAttractionsByType(type);
             setAttractions(fetchedAttractions);
         }
@@ -103,8 +104,14 @@ function ActivityForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("newactivity", newActivity);
-        console.log("storedVisitId", storedVisitId);
+
+        // if it's a restaurant, rating is required
+        if (selectedType === "restaurant") {
+            if (mealData.rating === '' || mealData.rating === null || mealData.rating === undefined) {
+                alert("Rating is required (You can change it later)");
+                return;
+            }
+        }
         try {
             const activityId = await addActivity(newActivity, storedVisitId);
 
@@ -139,7 +146,10 @@ function ActivityForm() {
                         <DateDisplay />
                     </div>
 
-                    <form className="form" onSubmit={handleSubmit}>
+                    <form className="form"
+                        onSubmit={(e) => {
+                            e.preventDefault(); // prevent enter key from submitting the form
+                        }}>
                         <label>Time of activity</label>
                         <TimePicker
                             onTimeChange={(timeStr) => setNewActivity(prevActivity => ({
@@ -262,7 +272,10 @@ function ActivityForm() {
                             }))}
                             placeholder="Optional"
                         />
-                        <button className="form-btn" type="submit">Add Activity</button>
+                        <button
+                            className="form-btn"
+                            onClick={(handleSubmit)}
+                            type="button">Add Activity</button>
                     </form>
 
 

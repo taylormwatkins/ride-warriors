@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import "./forms.css";
 
 
-function MealForm({ attractionId, onMealChange }) {
-    const [foodItems, setFoodItems] = useState([]);
+function MealForm({ attractionId, onMealChange, existingMeal = null }) {
+    const [foodDisplay, setFoodDisplay] = useState([]);
 
     const [meal, setMeal] = useState({
         rating: '',
@@ -12,17 +12,33 @@ function MealForm({ attractionId, onMealChange }) {
     });
 
     useEffect(() => {
-        const loadFoodItems = async () => {
+        const loadFoodDisplay = async () => {
             try {
                 const fetchedFood = await getFoodByAttraction(attractionId);
-                setFoodItems(fetchedFood);
+                setFoodDisplay(fetchedFood);
+                console.log("Fetched food items:", fetchedFood);
             }
             catch (error) {
                 console.error("Failed to fetch food items:", error);
             }
         };
 
-        loadFoodItems();
+        loadFoodDisplay();
+    }, []);
+
+
+
+    useEffect(() => {
+        if (existingMeal) {
+            const { rating, foodItems } = existingMeal;
+            console.log("Existing meal data:", existingMeal);
+            // extract food ids 
+            const foodIds = Array.isArray(foodItems)
+                ? foodItems.map(f => f.id)
+                : [];
+    
+            setMeal({ rating, foodIds });
+        }
     }, []);
 
 
@@ -51,20 +67,20 @@ function MealForm({ attractionId, onMealChange }) {
             <label>Select food</label>
             <div className="food-options">
                 {/* show entrees first then sides */}
-                {foodItems
+                {foodDisplay
                     .filter(food => food.isEntree) 
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map(food => (
                         <button
                             key={food.id}
                             type="button"
-                            className={meal.foodIds.includes(food.id) ? "selected-btn" : "form-btn"}
+                            className={(meal.foodIds.includes(food.id)) ? "selected-btn" : "form-btn"}                            
                             onClick={() => handleFoodSelect(food.id)}
                         >
                             {food.name}
                         </button>
                     ))} 
-                    {foodItems
+                    {foodDisplay
                     .filter(food => !food.isEntree) 
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map(food => (
