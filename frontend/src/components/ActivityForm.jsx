@@ -8,6 +8,7 @@ import './forms.css';
 
 function ActivityForm() {
     const storedVisitId = localStorage.getItem('visitId');
+    const visitDate = localStorage.getItem("visitDate")
 
     const [attractions, setAttractions] = useState([]);
     const [newActivity, setNewActivity] = useState({
@@ -102,8 +103,12 @@ function ActivityForm() {
 
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (visitDate === null) {
+            alert("Date not set! Set a date to add activities")
+            return;
+        }
 
         // if it's a restaurant, rating is required
         if (selectedType === "restaurant") {

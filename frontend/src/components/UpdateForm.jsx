@@ -1,17 +1,17 @@
 import './UpdateForm.css';
-import { useState, useEffect, act } from 'react';
-import { getVisitByDate, getVisitById, getActivitiesByVisit } from '../api/getters.js';
+import { useState, useEffect } from 'react';
+import { getVisitById, getActivitiesByVisit } from '../api/getters.js';
+import { updateVisit } from '../api/update';
 import DateDisplay from './DateDisplay.jsx';
 import EditActivityModal from './EditActivityModal.jsx';
-import { all } from 'axios';
 
 
 
 function UpdateForm() {
 
     const storedUserId = localStorage.getItem('userId');
+    const visitId = localStorage.getItem("visitId");
 
-    // const [selectedVisitId, setSelectedVisitId] = useState("");
     const [activities, setActivities] = useState([]);
     const [coasters, setCoasters] = useState([]);
     const [rides, setRides] = useState([]);
@@ -21,30 +21,34 @@ function UpdateForm() {
     const [allActivities, setAllActivities] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activityBeingEdited, setActivityBeingEdited] = useState(null);
-    const [weather, setWeather] = useState(null);
-
+    const [weather, setWeather] = useState("");
+    const [weatherEdit, setWeatherEdit] = useState(false);
+    const [dataUpdated, setDataUpdated] = useState(false);
 
 
     const [loadingMessage, setLoadingMessage] = useState("Loading...");
 
 
 
-
-
     useEffect(() => {
         const loadActivities = async () => {
             // console.log("Selected visit ID:", selectedVisitId);
-            let visitId = localStorage.getItem("visitId");
-            console.log("Visit ID from localStorage:", visitId);
+            console.log("Visit ID from localStorage:", visitId); 
+            if (visitId === null) {
+                setLoadingMessage("Date not set! Set a date to view activities");
+                return;
+            }
             try {
                 setLoadingMessage("Loading...");
                 const fetchedActivities = await getActivitiesByVisit(visitId);
                 const visitWeather = await getVisitById(visitId);
                 setWeather(visitWeather);
                 setActivities(fetchedActivities);
+                setWeatherEdit(false);
                 setAllActivities(fetchedActivities);
                 sortActivities(fetchedActivities);
                 console.log("Response from getActivitiesByVisit:", fetchedActivities);
+
 
                 if (fetchedActivities.length === 0) {
                     setLoadingMessage("No activities found for this date");
@@ -59,7 +63,25 @@ function UpdateForm() {
         };
 
         loadActivities();
-    }, []);
+    }, [dataUpdated]);
+
+
+    const calculateAvgWaitTimes = (activities) => {
+        if (!activities || activities.length === 0) return "";
+
+        // grab the wait times
+        const waitTimes = activities
+            // filter valid wait times
+            .filter(activity => typeof activity.waitTime === 'number')
+            .map(activity => activity.waitTime);
+
+        if (waitTimes.length === 0) return "";
+
+        // calculate average
+        const total = waitTimes.reduce((sum, time) => sum + time, 0);
+        const avg = Math.round(total / waitTimes.length); // round to nearest minute
+        return avg === 0 ? "" : `Average wait: ${avg}m`;
+    }
 
 
     const sortActivities = (activities) => {
@@ -73,7 +95,6 @@ function UpdateForm() {
 
 
     const handleTypeChange = async (type) => {
-
         setLoadingMessage("Loading...");
 
         // check if the type is already selected
@@ -95,19 +116,46 @@ function UpdateForm() {
             setActivities(allActivities);
             // reset to all activities if no types are selected
         }
+
         setLoadingMessage("");
 
     };
+
 
     const handleUpdateActivity = (updatedActivity) => {
         setActivities(prev =>
             prev.map(a => (a.id === updatedActivity.id ? updatedActivity : a))
         );
+        setDataUpdated(prev => !prev); // trigger re-fetch
+
     };
 
 
     const handleDeleteActivity = (activityId) => {
         setActivities(prev => prev.filter(a => a.id !== activityId));
+    };
+
+    const toggleWeatherEdit = () => {
+        setWeatherEdit(!weatherEdit);
+    };
+
+    const handleSaveVisit = async () => {
+        console.log("visitId:", visitId, typeof visitId);
+        console.log("edited weather:", weather);
+        try {
+            const updated = await updateVisit(weather, visitId);
+
+            if (updated) {
+                alert("visit updated successfully!");
+
+            } else {
+                alert("error updating visit");
+            }
+
+
+        } catch (error) {
+            console.error("Failed to update visit:", error);
+        }
     };
 
     const formatTimeForDisplay = (timeString) => {
@@ -132,45 +180,131 @@ function UpdateForm() {
                     <div className="title">
                         <div className="line-1">Showing activities for:</div>
                         <DateDisplay />
+                        <h3>{loadingMessage}</h3>
                     </div>
+
+                    <hr />
                     <div className="weather-summary">
-                {weather && (
-                    <>
-                    <h2>Weather</h2>
-                    <span className="weather-label">Temperature:</span> <span className="weather-value">{weather.temperature}°F</span> <br/>
-                    <span className="weather-label">Humidity:</span> <span className="weather-value">{weather.humidity}%</span> <br/>
-                    <span className="weather-label">Wind speed:</span> <span className="weather-value">{weather.windSpeed}</span> <br/>
-                    <span className="weather-label">UV Index:</span> <span className="weather-value">{weather.uvIndex}</span> <br/>
-                    <span className="activity-label">Rain:</span> <span className="activity-value">{weather.rain ? "Yes" : "No"}</span> <br />
+                        <h2>Weather</h2>
 
 
-                    </>
-                )}
+                        {weatherEdit ? (
+                            <div className="weather-edit">
+
+                                <button className="cancel-btn"
+                                    onClick={() => {
+                                        toggleWeatherEdit();
+                                    }}>cancel</button>
+
+                                <button className="edit-btn"
+                                    onClick={() => {
+                                        toggleWeatherEdit();
+                                        handleSaveVisit();
+                                    }}>save</button><br />
+
+                                <span className="weather-label">Temperature:</span>
+                                <input
+                                    className="input"
+                                    type="number"
+                                    value={weather.temperature}
+                                    onChange={(e) => setWeather({ ...weather, temperature: e.target.value })}
+                                />°F<br />
+
+                                <span className="weather-label">Humidity:</span>
+                                <input
+                                    className="input"
+                                    type="number"
+                                    value={weather.humidity}
+                                    onChange={(e) => setWeather({ ...weather, humidity: e.target.value })}
+                                />%<br />
+
+                                <span className="weather-label">Wind speed:</span>
+                                <input
+                                    className="input"
+                                    type="number"
+                                    value={weather.windSpeed}
+                                    onChange={(e) => setWeather({ ...weather, windSpeed: e.target.value })}
+                                />mph<br />
+
+                                <span className="weather-label">UV Index:</span>
+                                <input
+                                    className="input"
+                                    type="number"
+                                    value={weather.uvIndex}
+                                    onChange={(e) => setWeather({ ...weather, uvIndex: e.target.value })}
+                                /><br />
+
+                                <label className="checkbox-container">Rain?
+                                    <input
+                                        type="checkbox"
+                                        checked={weather.rain}
+                                        onChange={(e) => setWeather({ ...weather, rain: e.target.checked })}
+                                    />
+                                    <span className="checkmark"></span>
+                                </label><br />
+                            </div>
+                        ) : (
+
+                            <>
+                                <button className="edit-btn" onClick={() => { toggleWeatherEdit() }}>edit</button><br />
+                                <span className="weather-label">Temperature:</span> <span className="weather-value">{weather.temperature}°F</span> <br />
+                                {weather.humidity && (
+                                    <>
+                                        <span className="weather-label">Humidity:</span> <span className="weather-value">{weather.humidity}%</span> <br />
+                                    </>
+                                )}
+                                {weather.windSpeed && (
+                                    <>
+                                        <span className="weather-label">Wind speed:</span> <span className="weather-value">{weather.windSpeed}</span> <br />
+                                    </>
+                                )}
+                                {weather.uvIndex && (
+                                    <>
+                                        <span className="weather-label">UV Index:</span> <span className="weather-value">{weather.uvIndex}</span> <br />
+                                    </>
+                                )}
+                                <span className="activity-label">Rain:</span> <span className="activity-value">{weather.rain ? "Yes" : "No"}</span> <br />
+                            </>
+                        )}
                     </div>
+                    <hr />
                     <div className="activity-summary">
-                        {loadingMessage}
-                        <h3>Activities: {activities.length}</h3>
-                        <h3><button
-                            className={(selectedTypes.includes("coaster")) ? "selected-query-btn" : "query-btn"}
+                        <h3>
+                            Coasters | {coasters.length} |{calculateAvgWaitTimes(coasters)}<br />
+                            Rides | {rides.length} | {calculateAvgWaitTimes(rides)}<br />
+                            Restaurants | {restaurants.length} | {calculateAvgWaitTimes(restaurants)}<br />
+                            Other | {others.length} | {calculateAvgWaitTimes(others)}<br />
+                        </h3>
+                        <h3>Total activities: {allActivities.length} <br />{calculateAvgWaitTimes(allActivities)}</h3>
 
 
-                            onClick={() => handleTypeChange("coaster")}
-                        >Coasters</button> {coasters.length} |
+                        <h3>Filter by type:</h3>
+                        <div className="filter-buttons">
                             <button
-                                className={(selectedTypes.includes("ride")) ? "selected-query-btn" : "query-btn"}
-
+                                className={selectedTypes.includes("coaster") ? "selected-query-btn" : "query-btn"}
+                                onClick={() => handleTypeChange("coaster")}
+                            >
+                                Coasters
+                            </button>
+                            <button
+                                className={selectedTypes.includes("ride") ? "selected-query-btn" : "query-btn"}
                                 onClick={() => handleTypeChange("ride")}
-                            >Rides</button> {rides.length}<br />
+                            >
+                                Thrill Rides
+                            </button>
                             <button
-                                className={(selectedTypes.includes("restaurant")) ? "selected-query-btn" : "query-btn"}
-
+                                className={selectedTypes.includes("restaurant") ? "selected-query-btn" : "query-btn"}
                                 onClick={() => handleTypeChange("restaurant")}
-                            >Restaurants</button> {restaurants.length} |
+                            >
+                                Restaurants
+                            </button>
                             <button
-                                className={(selectedTypes.includes("other")) ? "selected-query-btn" : "query-btn"}
-
+                                className={selectedTypes.includes("other") ? "selected-query-btn" : "query-btn"}
                                 onClick={() => handleTypeChange("other")}
-                            >Other</button> {others.length}</h3>
+                            >
+                                Other
+                            </button>
+                        </div>
                     </div>
 
 

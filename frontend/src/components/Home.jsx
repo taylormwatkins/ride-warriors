@@ -51,8 +51,8 @@ function Home() {
             <div className="button-choices">
                 <button onClick={goToSetVisit}>Set visit</button>
                 <button onClick={goToAddActivity}>Add activity</button>
-                <button onClick={goToQueries}>Make query</button>
-                <button onClick={goToUpdate}>Update a visit</button>
+                {/* <button onClick={goToQueries}>Make query</button> */}
+                <button onClick={goToUpdate}>View or edit</button>
                 {adminToggle &&
                     <button onClick={goToAddAttraction}>Add attraction or food</button>
                 }

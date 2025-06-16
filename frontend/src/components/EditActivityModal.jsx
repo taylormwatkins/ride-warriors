@@ -3,6 +3,7 @@ import "./editActivityModal.css";
 import MealForm from "./MealForm.jsx";
 import { updateActivity, updateMeal } from "../api/update";
 import { deleteActivity } from "../api/delete";
+import TimePicker from './TimePicker';
 
 
 function EditActivityModal({ activity, attractionId, onClose, onUpdate, onDelete }) {
@@ -27,14 +28,14 @@ function EditActivityModal({ activity, attractionId, onClose, onUpdate, onDelete
     const handleDelete = async () => {
         const activityId = editedActivity.id;
         try {
-            const response = await deleteActivity(activityId);    
+            const response = await deleteActivity(activityId);
             if (response > 0) {
-                alert("Activity deleted successfully!");    
+                alert("Activity deleted successfully!");
 
             } else {
                 alert("Failed to delete activity.");
             }
-            onDelete(activityId); 
+            onDelete(activityId);
             onClose();
         } catch (error) {
             console.error("Failed to delete activity:", error);
@@ -77,16 +78,19 @@ function EditActivityModal({ activity, attractionId, onClose, onUpdate, onDelete
 
             <div className="modal">
                 <h2>Edit Activity - {attractionName}</h2>
-                <button className="delete-btn" onClick={handleDelete}>Delete</button><br/>
-                <label>Time of Day </label>
-                <input
-                    type="text"
-                    value={editedActivity.timeOfDay}
-                    onChange={e => handleChange("timeOfDay", e.target.value)}
-                /><br />
+                <button className="delete-btn" onClick={handleDelete}>Delete</button><br />
+                <label>Time </label>
+                <TimePicker
+                    onTimeChange={(timeStr) => setEditedActivity(prevActivity => ({
+                        ...prevActivity, timeOfDay: timeStr
+                    }))}
+                    existingTime={editedActivity.timeOfDay}
+                    defaultValue={editedActivity.timeOfDay}
+                /><br/>
 
                 <label>Wait Time (minutes) </label>
                 <input
+                    className="input"
                     type="number"
                     value={editedActivity.waitTime}
                     onChange={(e) => setEditedActivity(prevActivity => ({
@@ -95,6 +99,7 @@ function EditActivityModal({ activity, attractionId, onClose, onUpdate, onDelete
 
                 <label>Comments </label>
                 <input
+                    className="input"
                     type="text"
                     value={editedActivity.comments || ""}
                     onChange={e => handleChange("comments", e.target.value)}
@@ -119,8 +124,8 @@ function EditActivityModal({ activity, attractionId, onClose, onUpdate, onDelete
                     </>
                 ) : null}
                 <div className="modal-buttons">
-                    <button onClick={handleSave}>Save</button>
                     <button onClick={onClose}>Cancel</button>
+                    <button onClick={handleSave}>Save</button>
                 </div>
             </div>
         </div>

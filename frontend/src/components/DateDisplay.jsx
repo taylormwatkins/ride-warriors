@@ -12,6 +12,8 @@ function DateDisplay() {
     const [calendarDisplay, setCalendarDisplay] = useState(false);
     const [visitDates, setVisitDates] = useState([]);
     const [isDisabled, setIsDisabled] = useState(true);
+    const visitDate = localStorage.getItem("visitDate")
+
 
     // change the date to the format javascript likes
     // const formatDate = (date) => date.toISOString().split("T")[0];
@@ -20,17 +22,8 @@ function DateDisplay() {
     useEffect(() => {
         const showDate = async () => {
 
-            let visitDate = localStorage.getItem("visitDate")
-
             if (visitDate === null) {
-
-                // prevent an infinite loop, don't redirect if we're already there
-                if (window.location.pathname !== "/setvisit") {
-                    alert('Visit date not set. Redirecting to visit form.');
-                    window.location.href = '/setvisit';
-                }
                 setDateDisplay("No date set");
-
             }
             else {
                 setNewVisitDate(visitDate);

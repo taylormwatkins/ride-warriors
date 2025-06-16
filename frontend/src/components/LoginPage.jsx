@@ -27,8 +27,11 @@ function LoginPage() {
         // prevent page from refreshing when form is submitted
         event.preventDefault();
 
+        // account for trailing white space
+        const trimmedName = userName.trim();
+
         try {
-            const response = await login(userName);
+            const response = await login(trimmedName);
             const userId = response.data;
             console.log("Response from login:", response, userId);
             if (userId === 0) {
@@ -40,7 +43,7 @@ function LoginPage() {
             }
             else {
                 // store the userName
-                setUserName(userName);
+                setUserName(trimmedName);
                 // store the userId
                 // let userId = Number(response);
                 localStorage.setItem('userId', userId);
@@ -61,11 +64,14 @@ function LoginPage() {
     const handleNewUser = async (event) => {
         event.preventDefault();
 
+        // account for trailing white space
+        const trimmedName = userName.trim();
+
         try {
-            const response = await createNewUser(userName);
+            const response = await createNewUser(trimmedName);
 
             // store the userName
-            setUserName(userName);
+            setUserName(trimmedName);
             // store the userId
             let userId = response.data;
             localStorage.setItem('userId', userId);

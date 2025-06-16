@@ -23,3 +23,13 @@ export const updateMeal = async (meal, activityId) => {
         throw error;
     }
 };
+
+export const updateVisit = async (visit, visitId) => {
+    try {
+        const response = await apiClient.put(`/visits/updateVisit?visitId=${visitId}`, visit);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating visit:', error.response || error);
+        throw error;
+    }
+}

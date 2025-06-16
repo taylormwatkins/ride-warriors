@@ -8,6 +8,12 @@
     margin-bottom: 2px;
 }
 
+.weather-edit input[type="number"] {
+    max-width: 50px; 
+    max-height: 10px;
+    margin: 3px 10px;
+}
+
 .activity-value, .weather-value {
     color: black;
 }
@@ -35,6 +41,17 @@ li {
     font-size: 0.75em;
 }
 
+.cancel-btn {
+    cursor: pointer;
+    height: 20px;
+    min-width: 40px;
+    padding: 2px;
+    top: 2px;
+    right: 50px;
+    position: absolute;
+    font-size: 0.75em;
+}
+
 
 .query-btn {
     height: 25px;
@@ -52,3 +69,14 @@ li {
     padding: 0px 5px;
     margin: 0px 10px 10px;
 }
+
+
+.weather-summary {
+    position: relative;
+    min-width: 100%;
+}
+
+h2 {
+    margin: 5px;
+}
+

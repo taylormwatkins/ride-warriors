@@ -53,7 +53,7 @@ public class VisitController {
         return ResponseEntity.ok(visit.getId());
     }
 
-    @GetMapping("/getByDate")
+    @PostMapping("/getByDate")
     public ResponseEntity<Integer> getByDate(@RequestBody Visit visitRequest, @RequestParam int userId) {
 
         // get the date object

@@ -55,7 +55,7 @@ export const getFoodByAttraction = async (attractionId) => {
 
 export const getVisitByDate = async (userId, date) => {
     try {
-        const response = await apiClient.get(`/visits/getByDate?userId=${userId}`, { date });
+        const response = await apiClient.post(`/visits/getByDate?userId=${userId}`, {date});
         return response.data;
     } catch (error) {
         console.error('Error finding visit by date:', error.response || error);

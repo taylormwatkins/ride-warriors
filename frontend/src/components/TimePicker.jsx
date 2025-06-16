@@ -2,43 +2,68 @@ import { useState, useEffect } from "react";
 
 
 
-function TimePicker({ onTimeChange }) {
+function TimePicker({ onTimeChange, existingTime = null}) {
     const [hour, setHour] = useState("");
     const [minute, setMinute] = useState("");
     const [period, setPeriod] = useState("");
 
 
     useEffect(() => {
-        const showCurrentTime = async () => {
-
-            const localTime = new Date();
-            let h = localTime.getHours();
-            const m = localTime.getMinutes();
-            const p = h >= 12 ? "PM" : "AM";
-
-            // convert hour to 12-hour format
-            h = h % 12 || 12;
-
-            // Round minute to nearest multiple of 5
-            let roundedMinute = roundToNearestFifth(m);
-
-            // Increment hour if rounding up to 60
-            if (roundedMinute === 60) {
-                h = (h % 12) + 1;
-                roundedMinute = 0;
-            }
-            // update state once
-            setHour(h);
-            setMinute(roundedMinute);
-            setPeriod(p);
-
-            console.log("CurrentDate:", localTime);
-            console.log("Current Time:", `${h}:${roundedMinute} ${p}`);
-        };
-
-        showCurrentTime();
+        if (existingTime) {
+            showActivityTime();
+        } else {
+            showCurrentTime();
+        }
     }, []);
 
+
+    const showCurrentTime = async () => {
+
+        const localTime = new Date();
+        let h = localTime.getHours();
+        const m = localTime.getMinutes();
+        const p = h >= 12 ? "PM" : "AM";
+
+        // convert hour to 12-hour format
+        h = h % 12 || 12;
+
+        // round minute to nearest multiple of 5
+        let roundedMinute = roundToNearestFifth(m);
+
+        // increment hour if rounding up to 60
+        if (roundedMinute === 60) {
+            h = (h % 12) + 1;
+            roundedMinute = 0;
+        }
+        // update state
+        setHour(h);
+        setMinute(roundedMinute);
+        setPeriod(p);
+
+        console.log("Current Date:", localTime);
+        console.log("Current Time:", `${h}:${roundedMinute} ${p}`);
+    };
+
+
+    const showActivityTime = async () => {
+        console.log("existing time", existingTime);
+    
+        const [hourStr, minuteStr] = existingTime.split(":");
+        let h = parseInt(hourStr, 10);
+        let m = parseInt(minuteStr, 10);
+        const p = h >= 12 ? "PM" : "AM";
+        
+        // convert hour to 12-hour format
+        h = h % 12 || 12;
+
+        // update state
+        setHour(h);
+        setMinute(m);
+        setPeriod(p);
+
+    
+        console.log("Activity Time:", `${h}:${m} ${p}`);
+    };
 
     // a method that rounds the current minutes to the nearest multiple of 5
     const roundToNearestFifth = (minutes) => {

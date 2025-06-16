@@ -2,7 +2,6 @@
 
 TODO: 
 
--make edit weather button
 
 -fix the api responses to return actual response entities instead of just integers
 
